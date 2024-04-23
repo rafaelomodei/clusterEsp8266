@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../../../projects/clusterEsp8266"
+		},
+		{
+			"name": "slave",
+			"path": "../slave"
+		},
+		{
+			"name": "master",
+			"path": "."
+		}
+	],
+	"settings": {}
+}
