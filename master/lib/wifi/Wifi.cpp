@@ -1,19 +1,23 @@
 #include "Wifi.h"
 
-Wifi::Wifi() {}
-
-// Conectar à rede Wi-Fi
-void Wifi::begin()
+Wifi::Wifi(const char *ssid, const char *password)
 {
 
-    WiFi.begin(SSID, PASSWORD);
+    delay(10);
+    Serial.println();
+    Serial.print("Conectando-se a ");
+    Serial.println(ssid);
+
+    WiFi.begin(ssid, password);
+
     while (WiFi.status() != WL_CONNECTED)
     {
-        delay(1000);
-        Serial.println("Conectando ao WiFi...");
+        delay(500);
+        Serial.print(".");
     }
 
-    Serial.println("Conectado ao WiFi");
-
-    return;
+    Serial.println("");
+    Serial.println("WiFi conectado");
+    Serial.println("Endereço IP: ");
+    Serial.println(WiFi.localIP());
 }

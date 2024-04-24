@@ -4,14 +4,12 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-#define SSID "KDMinternet- MARIA RISSARTTI"
-#define PASSWORD "shift+tab"
+
 
 class Wifi
 {
 public:
-    Wifi();
-    void begin();
+    Wifi(const char *ssid, const char *password);
 };
 
 #endif
