@@ -4,8 +4,8 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-#include "Wifi.h"
 #include "MqttBroker.h"
+#include "Wifi.h"
 
 // Configiração do MQTT Broker
 #define MQTT_SERVER "broker.emqx.io"

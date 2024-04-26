@@ -3,10 +3,9 @@
 
 #include <ESP8266WiFi.h>
 
-class Wifi
-{
+class Wifi {
 public:
-    Wifi(const char *ssid, const char *password);
+  Wifi(const char *ssid, const char *password);
 };
 
 #endif

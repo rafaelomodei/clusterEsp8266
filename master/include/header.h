@@ -1,12 +1,12 @@
 #ifndef HEADER_H
 #define HEADER_H
 
-#include <WiFi.h>
 #include <PubSubClient.h>
+#include <WiFi.h>
 
 #include "Database.h"
-#include "Wifi.h"
 #include "MqttBroker.h"
+#include "Wifi.h"
 
 // Configiração do MQTT Broker
 #define MQTT_SERVER "broker.emqx.io"
@@ -16,6 +16,7 @@
 #define MQTT_PASSWORD "public"
 #define MQTT_OUT_TOPIC "data"
 #define MQTT_IN_TOPIC "data"
+#define MQTT_HAS_SLAVE_AVAILABLE_TOPIC "HAS_SLEAVE_AVAILABLE"
 #define MQTT_PORT 1883
 
 // Configuração do wifi

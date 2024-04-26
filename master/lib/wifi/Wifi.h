@@ -1,15 +1,12 @@
 #ifndef WIFI_H
 #define WIFI_H
 
-#include <WiFi.h>
 #include <HTTPClient.h>
+#include <WiFi.h>
 
-
-
-class Wifi
-{
+class Wifi {
 public:
-    Wifi(const char *ssid, const char *password);
+  Wifi(const char *ssid, const char *password);
 };
 
 #endif

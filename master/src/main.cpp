@@ -3,25 +3,23 @@
 // Instancie a classe MQTTBroker
 MqttBroker mqttBroker(MQTT_SERVER, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD, MQTT_CLIENT_ID, MQTT_OUT_TOPIC, MQTT_IN_TOPIC);
 
-void setup()
-{
-    Serial.begin(115200);
+void setup() {
+  Serial.begin(115200);
 
-    Wifi(WIFI_SSID, WIFI_PASSWORD);
+  Wifi(WIFI_SSID, WIFI_PASSWORD);
 
-    Database db;
+  Database db;
 
-    // Configuração inicial do MQTT
-    mqttBroker.setup();
+  // Configuração inicial do MQTT
+  mqttBroker.setup();
 
-    Serial.print("Data base: ");
+  Serial.print("Data base: ");
 
-    serializeJsonPretty(db.getUnorderedList(1), Serial);
+  serializeJsonPretty(db.getUnorderedList(1), Serial);
 }
 
-void loop()
-{
-    mqttBroker.loop();
+void loop() {
+  mqttBroker.loop();
 
-    // Mantenha a conexão MQTT ativa
+  // Mantenha a conexão MQTT ativa
 }
