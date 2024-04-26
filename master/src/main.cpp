@@ -13,8 +13,6 @@ void setup()
 
     // Configuração inicial do MQTT
     mqttBroker.setup();
-    // Inscreva-se em um tópico (opcional)
-    // mqttBroker.subscribe("tópico/teste");
 
     Serial.print("Data base: ");
 
