@@ -1,19 +1,24 @@
 #include "ManageSlaves.h"
 
-ManageSlaves::ManageSlaves(MqttBroker *mqttClients) { mqtt = mqttClients; }
+ManageSlaves::ManageSlaves() {}
 
 // Se tiver itens na fila, é pq tem slave disponível
-boolean ManageSlaves::hasSlaveAvailable() {
+bool ManageSlaves::hasSlaveAvailable() {
   return !queueAvailableSlaves.empty();
 }
 
 // Adicionar um novo Slave
-void ManageSlaves::add(SLAVE slave) { queueAvailableSlaves.push(slave); }
+void ManageSlaves::add(const char *idSlave) {
+
+  Serial.println("Adicionando esp a lista");
+
+  queueAvailableSlaves.push(idSlave);
+}
 
 // Retorna o proximo Slave
-SLAVE ManageSlaves::get() {
+std::string ManageSlaves::get() {
 
-  const SLAVE slave = queueAvailableSlaves.front();
+  std::string slave = queueAvailableSlaves.front();
   queueAvailableSlaves.pop();
   return slave;
 }

@@ -1,7 +1,15 @@
 #include "header.h"
 
 // Instancie a classe MQTTBroker
-MqttBroker mqttBroker(MQTT_SERVER, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD, MQTT_CLIENT_ID, MQTT_OUT_TOPIC, MQTT_IN_TOPIC);
+MqttBroker mqttBroker({
+  server : MQTT_SERVER,
+  userName : MQTT_USERNAME,
+  password : MQTT_PASSWORD,
+  clientId : MQTT_CLIENT_ID,
+  outTopic : MQTT_OUT_TOPIC,
+  inTopic : MQTT_IN_TOPIC,
+  port : MQTT_PORT,
+});
 
 void setup() {
   Serial.begin(115200);

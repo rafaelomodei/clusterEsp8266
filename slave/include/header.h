@@ -15,6 +15,7 @@
 #define MQTT_PASSWORD "public"
 #define MQTT_OUT_TOPIC "data"
 #define MQTT_IN_TOPIC "data"
+#define MQTT_HAS_SLAVE_AVAILABLE_TOPIC "HAS_SLEAVE_AVAILABLE"
 #define MQTT_PORT 1883
 
 // Configuração do wifi

@@ -4,6 +4,7 @@ WiFiClient   espClient;
 PubSubClient client(espClient);
 
 MqttBroker::MqttBroker(const char *server, int port, const char *userName, const char *password, const char *clientId, const char *outTopic, const char *inTopic) {
+
   mqttClientId = clientId;
   mqttServer   = server;
   mqttUsername = userName;
@@ -38,8 +39,10 @@ boolean MqttBroker::reconnect() {
 
   client.subscribe(mqttInTopic);
 
+  String clientIdString = mqttClientId + WiFi.macAddress();
+
   Serial.printf("Publicando no topico [ %s ]\n", mqttInTopic);
-  client.publish(mqttInTopic, "Esp8266: Conectado com sucesso");
+  client.publish(MQTT_HAS_SLAVE_AVAILABLE_TOPIC, clientIdString.c_str());
 
   return client.connected();
 }
@@ -56,7 +59,7 @@ void MqttBroker::loop() {
   if (!client.connected())
     reconnect();
 
-  client.publish(mqttInTopic, "Esp8266: Nova mensagem!");
+  // client.publish(mqttInTopic, "Esp8266: Nova mensagem!");
 
   client.loop();
 }

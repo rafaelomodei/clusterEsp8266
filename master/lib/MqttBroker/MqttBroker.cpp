@@ -2,21 +2,31 @@
 
 WiFiClient   espClient;
 PubSubClient client(espClient);
+ManageSlaves manageSlaves;
 
-MqttBroker::MqttBroker(const char *server, const int *port,
-                       const char *userName, const char *password,
-                       const char *clientId, const char *outTopic,
-                       const char *inTopic) {
-  mqttClientId = clientId;
-  mqttServer   = server;
-  mqttUsername = userName;
-  mqttPassword = password;
-  mqttOutTopic = outTopic;
-  mqttInTopic  = inTopic;
-  mqttPort     = port;
+MqttBroker::MqttBroker(MQTT_BROKER params) {
+  mqttServer   = params.server;
+  mqttClientId = params.clientId;
+  mqttPort     = &params.port;
+  mqttUsername = params.userName;
+  mqttPassword = params.password;
+  mqttOutTopic = params.outTopic;
+  mqttInTopic  = params.inTopic;
 }
 
 void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
+
+  Serial.print("MqttBroker::callback ");
+
+  char slave;
+
+  for (int i = 0; i < length; i++) {
+    slave = payload[i];
+  }
+
+  if (topic == MQTT_HAS_SLAVE_AVAILABLE_TOPIC)
+    manageSlaves.add(&slave);
+
   Serial.print("Message arrived in topic: ");
   Serial.println(topic);
   Serial.print("Message:");
@@ -34,6 +44,7 @@ boolean MqttBroker::reconnect() {
     return client.connected();
   }
 
+  client.subscribe(MQTT_HAS_SLAVE_AVAILABLE_TOPIC);
   Serial.printf("Conectado com sucesso [ %s ]\n", mqttClientId);
 
   return client.connected();

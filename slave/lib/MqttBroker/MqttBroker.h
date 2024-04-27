@@ -1,6 +1,10 @@
 #ifndef MQTT_BROKER_H
 #define MQTT_BROKER_H
 
+#ifndef MQTT_HAS_SLAVE_AVAILABLE_TOPIC
+#define MQTT_HAS_SLAVE_AVAILABLE_TOPIC "HAS_SLEAVE_AVAILABLE"
+#endif
+
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 

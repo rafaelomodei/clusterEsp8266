@@ -1,8 +1,25 @@
 #ifndef MQTT_BROKER_H
 #define MQTT_BROKER_H
 
+#ifndef MQTT_HAS_SLAVE_AVAILABLE_TOPIC
+#define MQTT_HAS_SLAVE_AVAILABLE_TOPIC "HAS_SLEAVE_AVAILABLE"
+#endif
+
 #include <PubSubClient.h>
 #include <WiFi.h>
+
+#include "ManageSlaves.h"
+
+typedef struct {
+  const char *server;
+  const char *userName;
+  const char *password;
+  const char *clientId;
+  const char *outTopic;
+  const char *inTopic;
+  const int   port;
+
+} MQTT_BROKER;
 
 class MqttBroker {
 private:
@@ -15,9 +32,7 @@ private:
   const int  *mqttPort;
 
 public:
-  MqttBroker(const char *server, const int *port, const char *userName,
-             const char *password, const char *clientId, const char *outTopic,
-             const char *inTopic);
+  MqttBroker(MQTT_BROKER params);
   boolean     reconnect();
   void        setup();
   void        loop();
