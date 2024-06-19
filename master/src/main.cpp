@@ -1,5 +1,7 @@
 #include "header.h"
 
+int currentPageUnordered = 0;
+
 ManageSlaves *manageSlaves = ManageSlaves::getInstance();
 
 // Instancie a classe MQTTBroker
@@ -22,10 +24,6 @@ void setup() {
 
   // Configuração inicial do MQTT
   mqttBroker.setup();
-
-  Serial.print("Data base: ");
-
-  serializeJsonPretty(db.getUnorderedList(1), Serial);
 }
 
 void loop() {
@@ -33,13 +31,20 @@ void loop() {
 
   if (manageSlaves->hasSlaveAvailable()) {
     std::string topicSleave = manageSlaves->get();
-    std::string message     = "[1, 2, 3]";
-    serializeJsonPretty(db.getUnorderedList(1), Serial);
 
-    Serial.printf("Enviando dados para o ESP: [ %s ] \n", topicSleave.c_str());
-    Serial.printf("Mensagem: [ %s ] \n", message.c_str());
-    Serial.println("-----------------------");
+    JsonDocument totalPage          = db.getTotalPage();
+    String       totalPageUnordered = totalPage["totalPageUnordered"];
 
-    mqttBroker.publish(topicSleave.c_str(), message.c_str());
+    if (currentPageUnordered <= atoi(totalPageUnordered.c_str())) {
+      String message = db.getUnorderedList(currentPageUnordered);
+      currentPageUnordered++;
+
+      Serial.printf("Total de paginas desordenada: %s \n", totalPageUnordered);
+      Serial.printf("Enviando dados para o ESP: [ %s ] \n", topicSleave.c_str());
+      Serial.printf("Mensagem: %s  \n", message.c_str());
+      Serial.println("-----------------------");
+
+      mqttBroker.publish(topicSleave.c_str(), message.c_str());
+    }
   }
 }

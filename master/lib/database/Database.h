@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 #define LIST_SIZE 10 // Tamanho do array de retorno da API
-#define BASE_URL "https://cluster-esp8266.vercel.app/unorderedList"
+#define BASE_URL "https://red-wolves-reply.loca.lt/"
 
 class Database {
 
@@ -14,7 +14,8 @@ class Database {
 
 public:
   Database();
-  JsonDocument getUnorderedList(const int page);
+  String       getUnorderedList(const int page);
+  JsonDocument getTotalPage();
 };
 
 #endif
