@@ -4,6 +4,7 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
+#include "SortingAlgorithm.h"
 #include "MqttBroker.h"
 #include "Wifi.h"
 

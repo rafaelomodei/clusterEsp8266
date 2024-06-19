@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 #define LIST_SIZE 10 // Tamanho do array de retorno da API
-#define BASE_URL "https://cluster-esp8266.vercel.app/"
+#define BASE_URL "https://cluster-esp8266.vercel.app/unorderedList"
 
 class Database {
 
