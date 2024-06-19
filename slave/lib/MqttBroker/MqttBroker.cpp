@@ -15,6 +15,23 @@ MqttBroker::MqttBroker(const char *server, int port, const char *userName, const
 }
 
 void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
+
+  String mqttCurrentClientId = "ESP8266_CLIENT_";
+  mqttCurrentClientId += String(WiFi.macAddress());
+
+  char *arrayDisordered = (char *)malloc(length + 1);
+
+  // Inicializa a memória alocada com zeros
+  memset(arrayDisordered, 0, length + 1);
+
+  for (unsigned int i = 0; i < length; i++) {
+    arrayDisordered[i] = (char)payload[i];
+  }
+
+  if (strcmp(topic, mqttCurrentClientId.c_str()) == 0) {
+    Serial.print(arrayDisordered);
+  }
+
   Serial.print("Mesagem recebida no topico: ");
   Serial.println(topic);
   Serial.print("Message:");

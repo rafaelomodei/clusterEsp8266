@@ -13,12 +13,12 @@ MqttBroker mqttBroker({
   port : MQTT_PORT,
 });
 
+Database db;
+
 void setup() {
   Serial.begin(115200);
 
   Wifi(WIFI_SSID, WIFI_PASSWORD);
-
-  Database db;
 
   // Configuração inicial do MQTT
   mqttBroker.setup();
@@ -34,6 +34,7 @@ void loop() {
   if (manageSlaves->hasSlaveAvailable()) {
     std::string topicSleave = manageSlaves->get();
     std::string message     = "[1, 2, 3]";
+    serializeJsonPretty(db.getUnorderedList(1), Serial);
 
     Serial.printf("Enviando dados para o ESP: [ %s ] \n", topicSleave.c_str());
     Serial.printf("Mensagem: [ %s ] \n", message.c_str());

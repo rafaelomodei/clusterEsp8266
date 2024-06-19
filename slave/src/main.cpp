@@ -15,7 +15,7 @@ void setup() {
   std::vector<float> arr       = {0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434};
   std::vector<float> sortedArr = bucketSort(arr);
 
-  Serial.println("Sorted array is: " + floatVectorToString(sortedArr));
+  // Serial.println("Sorted array is: " + floatVectorToString(sortedArr));
 
   mqttBroker.setup();
 
