@@ -15,7 +15,7 @@ MqttBroker::MqttBroker(const char *server, int port, const char *userName, const
 }
 
 void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
-  Serial.print("Message arrived in topic: ");
+  Serial.print("Mesagem recebida no topico: ");
   Serial.println(topic);
   Serial.print("Message:");
   for (int i = 0; i < length; i++) {
@@ -35,14 +35,11 @@ boolean MqttBroker::reconnect() {
   }
 
   Serial.printf("Conectado com sucesso [ %s ]\n", mqttCurrentClientId.c_str());
-  Serial.printf("Se inscrevendo no topico [ %s ]\n", mqttInTopic);
+  Serial.printf("Se inscrevendo no topico [ %s ]\n", mqttCurrentClientId.c_str());
+  client.subscribe(mqttCurrentClientId.c_str());
 
-  client.subscribe(mqttInTopic);
-
-  String clientIdString = mqttClientId + WiFi.macAddress();
-
-  Serial.printf("Publicando no topico [ %s ]\n", mqttInTopic);
-  client.publish(MQTT_HAS_SLAVE_AVAILABLE_TOPIC, clientIdString.c_str());
+  Serial.printf("Publicando no topico [ %s ]\n", MQTT_HAS_SLAVE_AVAILABLE_TOPIC);
+  client.publish(MQTT_HAS_SLAVE_AVAILABLE_TOPIC, mqttCurrentClientId.c_str());
 
   return client.connected();
 }
@@ -58,8 +55,6 @@ void MqttBroker::setup() {
 void MqttBroker::loop() {
   if (!client.connected())
     reconnect();
-
-  // client.publish(mqttInTopic, "Esp8266: Nova mensagem!");
 
   client.loop();
 }

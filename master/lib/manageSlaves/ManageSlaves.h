@@ -10,13 +10,16 @@
 
 class ManageSlaves {
 private:
+  static ManageSlaves    *instance;
   std::queue<std::string> queueAvailableSlaves;
 
 public:
   ManageSlaves();
-  bool        hasSlaveAvailable();
-  void        add(const char *status);
-  std::string get();
+  static ManageSlaves *getInstance();
+  bool                 hasSlaveAvailable();
+  void                 add(const char *status);
+  std::string          get();
+  void                 showInfo();
 };
 
 #endif

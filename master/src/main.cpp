@@ -1,5 +1,7 @@
 #include "header.h"
 
+ManageSlaves *manageSlaves = ManageSlaves::getInstance();
+
 // Instancie a classe MQTTBroker
 MqttBroker mqttBroker({
   server : MQTT_SERVER,
@@ -29,5 +31,14 @@ void setup() {
 void loop() {
   mqttBroker.loop();
 
-  // Mantenha a conexão MQTT ativa
+  if (manageSlaves->hasSlaveAvailable()) {
+    std::string topicSleave = manageSlaves->get();
+    std::string message     = "[1, 2, 3]";
+
+    Serial.printf("Enviando dados para o ESP: [ %s ] \n", topicSleave.c_str());
+    Serial.printf("Mensagem: [ %s ] \n", message.c_str());
+    Serial.println("-----------------------");
+
+    mqttBroker.publish(topicSleave.c_str(), message.c_str());
+  }
 }

@@ -2,7 +2,6 @@
 
 WiFiClient   espClient;
 PubSubClient client(espClient);
-ManageSlaves manageSlaves;
 
 MqttBroker::MqttBroker(MQTT_BROKER params) {
   mqttServer   = params.server;
@@ -16,24 +15,31 @@ MqttBroker::MqttBroker(MQTT_BROKER params) {
 
 void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
 
-  Serial.print("MqttBroker::callback ");
-
-  char slave;
-
-  for (int i = 0; i < length; i++) {
-    slave = payload[i];
-  }
-
-  if (topic == MQTT_HAS_SLAVE_AVAILABLE_TOPIC)
-    manageSlaves.add(&slave);
-
-  Serial.print("Message arrived in topic: ");
+  Serial.print("Mesagem recebida no topico: ");
   Serial.println(topic);
   Serial.print("Message:");
   for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
   }
   Serial.println();
+
+  ManageSlaves *manageSlaves = ManageSlaves::getInstance();
+
+  char *slave = (char *)malloc(length + 1);
+
+  // Inicializa a memória alocada com zeros
+  memset(slave, 0, length + 1);
+
+  for (unsigned int i = 0; i < length; i++) {
+    slave[i] = (char)payload[i];
+  }
+
+  Serial.printf("Item adicionando na lista:  %s \n", slave);
+
+  if (strcmp(topic, MQTT_HAS_SLAVE_AVAILABLE_TOPIC) == 0)
+    manageSlaves->add(slave);
+
+  
   Serial.println("-----------------------");
 }
 
@@ -59,6 +65,7 @@ void MqttBroker::setup() {
 }
 
 void MqttBroker::loop() {
+  
   if (!client.connected())
     reconnect();
 

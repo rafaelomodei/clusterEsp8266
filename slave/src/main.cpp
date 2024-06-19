@@ -10,11 +10,7 @@ void setup() {
 
   // Configuração inicial do MQTT
   mqttBroker.setup();
-  // Inscreva-se em um tópico (opcional)
-  mqttBroker.subscribe(MQTT_IN_TOPIC);
-  mqttBroker.publish(MQTT_IN_TOPIC, "ESP8266 TESTANDO...");
 
-  Serial.print("Data base: ");
 }
 
 void loop() {
