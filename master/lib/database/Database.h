@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 #define LIST_SIZE 10 // Tamanho do array de retorno da API
-#define BASE_URL "http://beige-needles-deny.loca.lt/"
+#define BASE_URL "http://blue-seals-see.loca.lt/"
 
 class Database {
 

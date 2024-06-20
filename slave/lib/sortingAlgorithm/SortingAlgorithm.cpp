@@ -1,4 +1,5 @@
 #include "SortingAlgorithm.h"
+#include <ArduinoJson.h>
 #include <algorithm>
 
 // Função para encontrar o máximo valor no array
@@ -7,19 +8,20 @@ int getMaxValue(const std::vector<int> &arr) {
 }
 
 // Função para o algoritmo bucket sort
-std::vector<int> bucketSort(std::vector<int> &arr) {
+std::vector<std::vector<int>> bucketSort(std::vector<int> &arr) {
+
+  const int TOTAL_BUCKET = 10;
+
   int n = arr.size();
-  if (n <= 0)
-    return arr;
 
   int maxValue    = getMaxValue(arr);
-  int bucketCount = maxValue / 10 + 1;
+  int bucketCount = maxValue / TOTAL_BUCKET + 1;
 
   std::vector<std::vector<int>> buckets(bucketCount);
 
   // Distribui os elementos nos buckets
   for (int i = 0; i < n; i++) {
-    int bucketIndex = arr[i] / 10;
+    int bucketIndex = arr[i] / TOTAL_BUCKET;
     buckets[bucketIndex].push_back(arr[i]);
   }
 
@@ -32,7 +34,7 @@ std::vector<int> bucketSort(std::vector<int> &arr) {
     }
   }
 
-  return arr;
+  return buckets;
 }
 
 void insertionSort(std::vector<int> &bucket) {

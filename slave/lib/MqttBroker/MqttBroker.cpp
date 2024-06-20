@@ -1,4 +1,5 @@
 #include "MqttBroker.h"
+#include "Helpers.h"
 #include "SortingAlgorithm.h"
 #include <typeinfo>
 
@@ -45,10 +46,19 @@ void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
       token = strtok(nullptr, ", ");
     }
     Serial.println();
+    int intArraySize = intArray.size();
 
-    std::vector<int> arr = bucketSort(intArray);
-    Serial.print("Array ordenado: ");
-    printIntArray(arr);
+    if (intArraySize > 0) {
+      std::vector<std::vector<int>> arr         = bucketSort(intArray);
+      String                        bucketsJson = convertBucketsToJson(arr);
+
+      // Exibe o JSON do buckets resultante
+      Serial.println(bucketsJson);
+      client.publish(mqttCurrentClientId.c_str(), bucketsJson.c_str());
+    }
+
+    // Serial.print("Array ordenado: ");
+    // printIntArray(arr);
 
     Serial.printf("Publicando no topico [ %s ]\n", MQTT_HAS_SLAVE_AVAILABLE_TOPIC);
     client.publish(MQTT_HAS_SLAVE_AVAILABLE_TOPIC, mqttCurrentClientId.c_str());

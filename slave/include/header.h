@@ -4,8 +4,9 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-#include "SortingAlgorithm.h"
+#include "Helpers.h"
 #include "MqttBroker.h"
+#include "SortingAlgorithm.h"
 #include "Wifi.h"
 
 // Configiração do MQTT Broker
