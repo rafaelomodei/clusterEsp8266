@@ -34,12 +34,23 @@ void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
     slave[i] = (char)payload[i];
   }
 
-  Serial.printf("Item adicionando na lista:  %s \n", slave);
-
-  if (strcmp(topic, MQTT_HAS_SLAVE_AVAILABLE_TOPIC) == 0)
+  if (strcmp(topic, MQTT_HAS_SLAVE_AVAILABLE_TOPIC) == 0) {
+    Serial.printf("Item adicionando na lista:  %s \n", slave);
     manageSlaves->add(slave);
+  }
+  for (const std::string &sleave : manageSlaves->getAllSleave()) {
 
-  
+    if (strcmp(topic, sleave.c_str())) {
+      Serial.printf("-->> sleave: %s \n", sleave.c_str());
+
+      Serial.print("-->> Message:");
+      for (int i = 0; i < length; i++) {
+        Serial.print((char)payload[i]);
+      }
+      Serial.println();
+    }
+  }
+
   Serial.println("-----------------------");
 }
 
@@ -65,7 +76,7 @@ void MqttBroker::setup() {
 }
 
 void MqttBroker::loop() {
-  
+
   if (!client.connected())
     reconnect();
 

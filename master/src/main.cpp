@@ -1,4 +1,5 @@
 #include "header.h"
+#include "esp_timer.h"
 
 int currentPageUnordered = 0;
 
@@ -44,6 +45,7 @@ void loop() {
       Serial.printf("Mensagem: %s  \n", message.c_str());
       Serial.println("-----------------------");
 
+      mqttBroker.subscribe(topicSleave.c_str());
       mqttBroker.publish(topicSleave.c_str(), message.c_str());
     }
   }

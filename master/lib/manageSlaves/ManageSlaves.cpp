@@ -2,7 +2,7 @@
 
 // Inicializando a instância estática como nula
 
-ManageSlaves::ManageSlaves(){};
+ManageSlaves::ManageSlaves() {};
 ManageSlaves *ManageSlaves::instance = nullptr;
 
 ManageSlaves *ManageSlaves::getInstance() {
@@ -21,9 +21,17 @@ bool ManageSlaves::hasSlaveAvailable() {
 // Adicionar um novo Slave
 void ManageSlaves::add(const char *idSlave) {
 
-  Serial.println("Adicionando esp a lista");
-
+  Serial.println("Adicionando ESP a lista");
   queueAvailableSlaves.push(idSlave);
+
+  auto iterator = std::find(queueSlaves.begin(), queueSlaves.end(), idSlave);
+  if (queueSlaves.empty())
+    queueSlaves.push_back(idSlave);
+
+  for (const std::string &sleave : queueSlaves) {
+    if (iterator != queueSlaves.end())
+      queueSlaves.push_back(idSlave);
+  }
 }
 
 void ManageSlaves::showInfo() {
@@ -45,4 +53,10 @@ std::string ManageSlaves::get() {
   std::string slave = queueAvailableSlaves.front();
   queueAvailableSlaves.pop();
   return slave;
+}
+
+// Retorna a lista de Slaves
+std::vector<std::string> ManageSlaves::getAllSleave() {
+
+  return queueSlaves;
 }
