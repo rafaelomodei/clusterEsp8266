@@ -39,7 +39,7 @@ void loop() {
       String message = db.getUnorderedList(currentPageUnordered);
       currentPageUnordered++;
 
-      Serial.printf("Total de paginas desordenada: %s \n", totalPageUnordered);
+      Serial.printf("Total de paginas de itens desordenados: %s \n", totalPageUnordered);
       Serial.printf("Enviando dados para o ESP: [ %s ] \n", topicSleave.c_str());
       Serial.printf("Mensagem: %s  \n", message.c_str());
       Serial.println("-----------------------");

@@ -5,8 +5,9 @@
 #include <iostream>
 #include <vector>
 
-std::vector<float> bucketSort(const std::vector<float> &arr);
-String             floatVectorToString(const std::vector<float> &vec);
-void               insertionSort(std::vector<float> &bucket);
+std::vector<int> bucketSort(std::vector<int> &arr);
+String           floatVectorToString(const std::vector<int> &vec);
+void             insertionSort(std::vector<int> &bucket);
+void             printIntArray(const std::vector<int> &intArray);
 
 #endif // BUCKETSORT_H

@@ -7,7 +7,7 @@ String Database::getUnorderedList(const int page) {
   String       jsonString;
   JsonDocument doc;
 
-  Serial.printf("URL: [%S ] StatusCode: \n", url.c_str());
+  Serial.printf("URL: [%S ] StatusCode: ", url.c_str());
 
   http.begin(url);
 

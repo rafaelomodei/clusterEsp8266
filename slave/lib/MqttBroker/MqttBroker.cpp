@@ -1,4 +1,6 @@
 #include "MqttBroker.h"
+#include "SortingAlgorithm.h"
+#include <typeinfo>
 
 WiFiClient   espClient;
 PubSubClient client(espClient);
@@ -15,7 +17,6 @@ MqttBroker::MqttBroker(const char *server, int port, const char *userName, const
 }
 
 void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
-
   String mqttCurrentClientId = "ESP8266_CLIENT_";
   mqttCurrentClientId += String(WiFi.macAddress());
 
@@ -29,12 +30,33 @@ void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
   }
 
   if (strcmp(topic, mqttCurrentClientId.c_str()) == 0) {
-    Serial.print(arrayDisordered);
+
+    // Remove os colchetes
+    char *trimmedArray                     = arrayDisordered + 1;
+    trimmedArray[strlen(trimmedArray) - 1] = '\0';
+
+    Serial.print("-> Elementos: ");
+    // Converter o array de char para um array de inteiros
+    std::vector<int> intArray;
+    char            *token = strtok(trimmedArray, ", ");
+    while (token != nullptr) {
+      Serial.printf(" %s |", token);
+      intArray.push_back(atoi(token));
+      token = strtok(nullptr, ", ");
+    }
+    Serial.println();
+
+    std::vector<int> arr = bucketSort(intArray);
+    Serial.print("Array ordenado: ");
+    printIntArray(arr);
+
+    Serial.printf("Publicando no topico [ %s ]\n", MQTT_HAS_SLAVE_AVAILABLE_TOPIC);
+    client.publish(MQTT_HAS_SLAVE_AVAILABLE_TOPIC, mqttCurrentClientId.c_str());
   }
 
-  Serial.print("Mesagem recebida no topico: ");
+  Serial.printf("Mesagem recebida no topico: ");
   Serial.println(topic);
-  Serial.print("Message:");
+  Serial.print("Message: ");
   for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
   }
