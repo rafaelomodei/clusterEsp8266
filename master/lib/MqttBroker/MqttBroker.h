@@ -8,7 +8,10 @@
 #include <PubSubClient.h>
 #include <WiFi.h>
 
+#include "Database.h"
 #include "ManageSlaves.h"
+
+#define MQTT_MAX_BUFFER_SIZE 2048
 
 typedef struct {
   const char *server;

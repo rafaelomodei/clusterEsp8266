@@ -36,7 +36,7 @@ void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
     char *trimmedArray                     = arrayDisordered + 1;
     trimmedArray[strlen(trimmedArray) - 1] = '\0';
 
-    Serial.print("-> Elementos: ");
+    Serial.print("[ INFO ] - Elementos: ");
     // Converter o array de char para um array de inteiros
     std::vector<int> intArray;
     char            *token = strtok(trimmedArray, ", ");
@@ -49,24 +49,30 @@ void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
     int intArraySize = intArray.size();
 
     if (intArraySize > 0) {
-      std::vector<std::vector<int>> arr         = bucketSort(intArray);
-      String                        bucketsJson = convertBucketsToJson(arr);
+      std::vector<std::vector<int>> buckets = bucketSort(intArray);
 
+      String bucketsJson = convertBucketsToJson(buckets);
+      // String bucketsString = convertBucketsToString(buckets);
+
+      String topicSleaveResponse = mqttCurrentClientId;
+      topicSleaveResponse += "_RESPONSE";
+      // std::string ajson = "[{\"id\":2,\"list\":[88,4,88,4,88,4,88,4,88,4,88,4]},{\"id\":3,\"list\":[3,99,3,99,3,99,3,99,3,99,3,99]}]";
+      // std::string ajson = convertToJson(buckets);  
       // Exibe o JSON do buckets resultante
       Serial.println(bucketsJson);
-      client.publish(mqttCurrentClientId.c_str(), bucketsJson.c_str());
+      client.publish("ESP8266_CLIENT_C8:C9:A3:69:DA:80_RESPONSE", bucketsJson.c_str());
+
+      Serial.printf("[ INFO ] - Publicando no topico [ %s ]\n\r", MQTT_HAS_SLAVE_AVAILABLE_TOPIC);
+      client.publish(MQTT_HAS_SLAVE_AVAILABLE_TOPIC, mqttCurrentClientId.c_str());
     }
 
     // Serial.print("Array ordenado: ");
     // printIntArray(arr);
-
-    Serial.printf("Publicando no topico [ %s ]\n", MQTT_HAS_SLAVE_AVAILABLE_TOPIC);
-    client.publish(MQTT_HAS_SLAVE_AVAILABLE_TOPIC, mqttCurrentClientId.c_str());
   }
 
-  Serial.printf("Mesagem recebida no topico: ");
+  Serial.printf("[ INFO ] - Mesagem recebida no topico: ");
   Serial.println(topic);
-  Serial.print("Message: ");
+  Serial.print("[ INFO ] - Message: ");
   for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
   }
@@ -79,15 +85,15 @@ boolean MqttBroker::reconnect() {
   mqttCurrentClientId += String(WiFi.macAddress());
 
   if (!client.connect(mqttCurrentClientId.c_str())) {
-    Serial.printf("Falha ao se conectar [ %s ]\n", mqttCurrentClientId.c_str());
+    Serial.printf("[ ERRO ] - Falha ao se conectar [ %s ]\n\r", mqttCurrentClientId.c_str());
     return client.connected();
   }
 
-  Serial.printf("Conectado com sucesso [ %s ]\n", mqttCurrentClientId.c_str());
-  Serial.printf("Se inscrevendo no topico [ %s ]\n", mqttCurrentClientId.c_str());
+  Serial.printf("[ INFO ] - Conectado com sucesso [ %s ]\n\r", mqttCurrentClientId.c_str());
+  Serial.printf("[ INFO ] - Se inscrevendo no topico [ %s ]\n\r", mqttCurrentClientId.c_str());
   client.subscribe(mqttCurrentClientId.c_str());
 
-  Serial.printf("Publicando no topico [ %s ]\n", MQTT_HAS_SLAVE_AVAILABLE_TOPIC);
+  Serial.printf("[ INFO ] - Publicando no topico [ %s ]\n\r", MQTT_HAS_SLAVE_AVAILABLE_TOPIC);
   client.publish(MQTT_HAS_SLAVE_AVAILABLE_TOPIC, mqttCurrentClientId.c_str());
 
   return client.connected();
@@ -98,6 +104,7 @@ void MqttBroker::setup() {
   const int port = 1883;
 
   client.setServer(mqttServer, port);
+  client.setBufferSize(MQTT_MAX_BUFFER_SIZE);
   client.setCallback(MqttBroker::callback);
 }
 

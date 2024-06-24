@@ -15,54 +15,58 @@ MqttBroker::MqttBroker(MQTT_BROKER params) {
 
 void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
 
-  Serial.print("Mesagem recebida no topico: ");
-  Serial.println(topic);
-  Serial.print("Message:");
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-  }
-  Serial.println();
-
   ManageSlaves *manageSlaves = ManageSlaves::getInstance();
+  Database     *db           = Database::getInstance();
 
-  char *slave = (char *)malloc(length + 1);
-
-  // Inicializa a memória alocada com zeros
-  memset(slave, 0, length + 1);
-
+  // Converte o payload para uma String
+  String slave = "";
   for (unsigned int i = 0; i < length; i++) {
-    slave[i] = (char)payload[i];
+    slave += (char)payload[i];
   }
 
   if (strcmp(topic, MQTT_HAS_SLAVE_AVAILABLE_TOPIC) == 0) {
-    Serial.printf("Item adicionando na lista:  %s \n", slave);
-    manageSlaves->add(slave);
+    // Serial.printf("[ INFO ] - ESP adicionando na lista:  %s \n\r", slave.c_str());
+
+    manageSlaves->add(slave.c_str());
+
+    // Concatena a string de sufixo
+    String suffix = "_RESPONSE";
+    slave += suffix;
+    manageSlaves->addSlavesToQueue(slave.c_str());
   }
+
+  // Serial.printf("[ ### ] - Topico:  ");
+  // Serial.println(topic);
+
   for (const std::string &sleave : manageSlaves->getAllSleave()) {
 
-    if (strcmp(topic, sleave.c_str())) {
-      Serial.printf("-->> sleave: %s \n", sleave.c_str());
+    std::size_t sizeQueueSlaves = manageSlaves->getAllSleave().size();
 
-      Serial.print("-->> Message:");
-      for (int i = 0; i < length; i++) {
-        Serial.print((char)payload[i]);
+    if (strcmp(topic, sleave.c_str()) == 0) {
+      // Serial.printf("[ INFO ] - Sleave: %s \n\r", sleave.c_str());
+      // Serial.print("[ INFO:RECEBIDO ] - Message: ");
+      // Serial.println();
+
+      String data = "";
+      for (unsigned int i = 0; i < length; i++) {
+        data += (char)payload[i];
       }
-      Serial.println();
+
+      if (!data.isEmpty())
+        db->postBucketList(data);
     }
   }
-
-  Serial.println("-----------------------");
 }
 
 boolean MqttBroker::reconnect() {
 
   if (!client.connect(mqttClientId)) {
-    Serial.printf("Falha ao se conectar [ %s ]\n", mqttClientId);
+    // Serial.printf("[ ERRO ] - Falha ao se conectar [ %s ]\n\r", mqttClientId);
     return client.connected();
   }
 
   client.subscribe(MQTT_HAS_SLAVE_AVAILABLE_TOPIC);
-  Serial.printf("Conectado com sucesso [ %s ]\n", mqttClientId);
+  // Serial.printf("[ INFO ] - Conectado com sucesso [ %s ]\n\r", mqttClientId);
 
   return client.connected();
 }
@@ -72,6 +76,7 @@ void MqttBroker::setup() {
   const int port = 1883;
 
   client.setServer(mqttServer, port);
+  client.setBufferSize(MQTT_MAX_BUFFER_SIZE);
   client.setCallback(MqttBroker::callback);
 }
 

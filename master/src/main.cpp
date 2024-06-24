@@ -1,7 +1,5 @@
-#include "header.h"
 #include "esp_timer.h"
-
-int currentPageUnordered = 0;
+#include "header.h"
 
 ManageSlaves *manageSlaves = ManageSlaves::getInstance();
 
@@ -16,10 +14,10 @@ MqttBroker mqttBroker({
   port : MQTT_PORT,
 });
 
-Database db;
+Database *db = Database::getInstance();
 
 void setup() {
-  Serial.begin(115200);
+  // Serial.begin(115200);
 
   Wifi(WIFI_SSID, WIFI_PASSWORD);
 
@@ -30,23 +28,43 @@ void setup() {
 void loop() {
   mqttBroker.loop();
 
+  // Caso o mestre ainda não esteja inscrito no topico do sleave, então se inscreve
+  if (!manageSlaves->getNonSubscribableSlaves().empty()) {
+
+    // Serial.println("[ INFO ] - Inscrevendo nos topicos dos sleaves");
+
+    int sizeNonSubscribableSlaves = manageSlaves->getNonSubscribableSlaves().size();
+
+    for (int i = 0; i < sizeNonSubscribableSlaves; i++) {
+      std::string id = manageSlaves->getNonSubscribableSlaves()[i].id;
+      // Serial.printf("[ INFO ] - Inscrito no topico: %s \n\r", id.c_str());
+
+      mqttBroker.subscribe(id.c_str());
+      manageSlaves->updateSlaveSubscription(id.c_str());
+      // Serial.println("[ INFO ] - Logo depois de se inscrever");
+    }
+  }
+
+  // Busca os dados na API
   if (manageSlaves->hasSlaveAvailable()) {
     std::string topicSleave = manageSlaves->get();
 
-    JsonDocument totalPage          = db.getTotalPage();
-    String       totalPageUnordered = totalPage["totalPageUnordered"];
+    if (db->totalPageUnordered == -1) {
+      JsonDocument totalPage                = db->getTotalPage();
+      String       stringTotalPageUnordered = totalPage["totalPageUnordered"];
+      db->totalPageUnordered                = atoi(stringTotalPageUnordered.c_str());
+    }
 
-    if (currentPageUnordered <= atoi(totalPageUnordered.c_str())) {
-      String message = db.getUnorderedList(currentPageUnordered);
-      currentPageUnordered++;
+    if (db->currentPageUnordered <= db->totalPageUnordered) {
+      String element = db->getUnorderedList();
 
-      Serial.printf("Total de paginas de itens desordenados: %s \n", totalPageUnordered);
-      Serial.printf("Enviando dados para o ESP: [ %s ] \n", topicSleave.c_str());
-      Serial.printf("Mensagem: %s  \n", message.c_str());
-      Serial.println("-----------------------");
+      // Serial.printf("[ INFO ] - Paginas processadas: %d de %d \n\r", db->currentPageUnordered, db->totalPageUnordered);
+      // Serial.printf("[ INFO ] - Enviando dados para o ESP: [ %s ] \n\r", topicSleave.c_str());
+      // Serial.printf("[ INFO ] - Elementos: %s  \n", element.c_str());
+      // Serial.println("-----------------------");
 
-      mqttBroker.subscribe(topicSleave.c_str());
-      mqttBroker.publish(topicSleave.c_str(), message.c_str());
+      // mqttBroker.subscribe(topicSleave.c_str());
+      mqttBroker.publish(topicSleave.c_str(), element.c_str());
     }
   }
 }

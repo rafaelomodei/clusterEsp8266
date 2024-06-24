@@ -8,6 +8,8 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
+#define MQTT_MAX_BUFFER_SIZE 2048
+
 class MqttBroker {
 private:
   const char *mqttServer;

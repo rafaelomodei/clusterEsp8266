@@ -14,8 +14,8 @@ Wifi::Wifi(const char *ssid, const char *password) {
     Serial.print(".");
   }
 
-  Serial.println("");
-  Serial.println("WiFi conectado");
-  Serial.println("Endereço IP: ");
+  Serial.println();
+  Serial.println("[ INFO ] - WiFi conectado");
+  Serial.print("[ INFO ] - Endereço IP: ");
   Serial.println(WiFi.localIP());
 }

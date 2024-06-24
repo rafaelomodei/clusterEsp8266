@@ -6,16 +6,22 @@
 #include <stdlib.h>
 
 #define LIST_SIZE 10 // Tamanho do array de retorno da API
-#define BASE_URL "http://blue-seals-see.loca.lt/"
+#define BASE_URL "http://192.168.30.105:3000/"
 
 class Database {
 
-  HTTPClient http;
+  HTTPClient       http;
+  static Database *instance;
 
 public:
+  int currentPageUnordered;
+  int totalPageUnordered;
+
   Database();
-  String       getUnorderedList(const int page);
-  JsonDocument getTotalPage();
+  static Database *getInstance();
+  String           getUnorderedList();
+  JsonDocument     getTotalPage();
+  void             postBucketList(String data);
 };
 
 #endif

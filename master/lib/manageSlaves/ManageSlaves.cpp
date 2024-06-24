@@ -20,31 +20,40 @@ bool ManageSlaves::hasSlaveAvailable() {
 
 // Adicionar um novo Slave
 void ManageSlaves::add(const char *idSlave) {
-
-  Serial.println("Adicionando ESP a lista");
   queueAvailableSlaves.push(idSlave);
+}
 
-  auto iterator = std::find(queueSlaves.begin(), queueSlaves.end(), idSlave);
-  if (queueSlaves.empty())
-    queueSlaves.push_back(idSlave);
+// Adicionar um novo Slave
+void ManageSlaves::addSlavesToQueue(const char *idSlave) {
 
-  for (const std::string &sleave : queueSlaves) {
-    if (iterator != queueSlaves.end())
-      queueSlaves.push_back(idSlave);
+  if (queueSlaves.empty()) {
+    queueSlaves.push_back({idSlave, false});
+  }
+
+  auto iterator = std::find_if(queueSlaves.begin(), queueSlaves.end(), [idSlave](const Slave &s) {
+    return s.id == idSlave;
+  });
+
+  if (iterator == queueSlaves.end()) {
+    ManageSlaves *manageSlaves = ManageSlaves::getInstance();
+    queueSlaves.push_back({idSlave, false});
+
+    // Atualize o iterador se você estiver adicionando um novo elemento
+    // iterator = std::find(queueSlaves.begin(), queueSlaves.end(), idSlave);
   }
 }
 
 void ManageSlaves::showInfo() {
-  Serial.println("Imprimindo lista de slaves disponíveis: ");
+  // Serial.println("[ INFO ] - Imprimindo lista de slaves disponiveis: ");
 
   std::queue<std::string> queueTemp = queueAvailableSlaves;
 
   while (!queueAvailableSlaves.empty()) {
-    Serial.printf("%s; ", queueAvailableSlaves.front().c_str());
+    // Serial.printf("%s | ", queueAvailableSlaves.front().c_str());
     queueAvailableSlaves.pop();
   }
 
-  Serial.println("-----------------------");
+  // Serial.println("-----------------------");
 }
 
 // Retorna o proximo Slave
@@ -58,5 +67,31 @@ std::string ManageSlaves::get() {
 // Retorna a lista de Slaves
 std::vector<std::string> ManageSlaves::getAllSleave() {
 
-  return queueSlaves;
+  std::vector<std::string> slaveIds;
+  for (const auto &slave : queueSlaves) {
+    slaveIds.push_back(slave.id);
+  }
+  return slaveIds;
+}
+
+// Retorna os sleave que o master não está inscrito
+std::vector<Slave> ManageSlaves::getNonSubscribableSlaves() {
+  std::vector<Slave> nonSubscribableSlaves;
+  for (const auto &slave : queueSlaves) {
+    if (!slave.isSubscribe) {
+      nonSubscribableSlaves.push_back(slave);
+    }
+  }
+  return nonSubscribableSlaves;
+}
+
+void ManageSlaves::updateSlaveSubscription(const char *idSlave) {
+  // Serial.println("[ INFO ] - Atualizando a fila de sleave inscrito");
+
+  for (auto &slave : queueSlaves) {
+    if (slave.id == idSlave) {
+      slave.isSubscribe = true;
+      break;
+    }
+  }
 }
