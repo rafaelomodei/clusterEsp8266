@@ -29,7 +29,7 @@ public:
   void                     add(const char *status);
   void                     addSlavesToQueue(const char *idSlave);
   void                     updateSlaveSubscription(const char *idSlave);
-  std::string              get();
+  std::string              getSleave();
   std::vector<std::string> getAllSleave();
   std::vector<Slave>       getNonSubscribableSlaves();
 };

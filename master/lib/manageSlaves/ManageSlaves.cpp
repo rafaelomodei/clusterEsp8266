@@ -44,20 +44,20 @@ void ManageSlaves::addSlavesToQueue(const char *idSlave) {
 }
 
 void ManageSlaves::showInfo() {
-  // Serial.println("[ INFO ] - Imprimindo lista de slaves disponiveis: ");
+  Serial.println("[ INFO ] - Imprimindo lista de slaves disponiveis: ");
 
   std::queue<std::string> queueTemp = queueAvailableSlaves;
 
   while (!queueAvailableSlaves.empty()) {
-    // Serial.printf("%s | ", queueAvailableSlaves.front().c_str());
+    Serial.printf("%s | ", queueAvailableSlaves.front().c_str());
     queueAvailableSlaves.pop();
   }
 
-  // Serial.println("-----------------------");
+  Serial.println("-----------------------");
 }
 
 // Retorna o proximo Slave
-std::string ManageSlaves::get() {
+std::string ManageSlaves::getSleave() {
 
   std::string slave = queueAvailableSlaves.front();
   queueAvailableSlaves.pop();
@@ -86,7 +86,7 @@ std::vector<Slave> ManageSlaves::getNonSubscribableSlaves() {
 }
 
 void ManageSlaves::updateSlaveSubscription(const char *idSlave) {
-  // Serial.println("[ INFO ] - Atualizando a fila de sleave inscrito");
+  Serial.println("[ INFO ] - Atualizando a fila de sleave inscrito");
 
   for (auto &slave : queueSlaves) {
     if (slave.id == idSlave) {

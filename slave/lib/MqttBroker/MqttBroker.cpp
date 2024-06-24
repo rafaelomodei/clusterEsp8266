@@ -52,15 +52,13 @@ void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
       std::vector<std::vector<int>> buckets = bucketSort(intArray);
 
       String bucketsJson = convertBucketsToJson(buckets);
-      // String bucketsString = convertBucketsToString(buckets);
 
       String topicSleaveResponse = mqttCurrentClientId;
       topicSleaveResponse += "_RESPONSE";
-      // std::string ajson = "[{\"id\":2,\"list\":[88,4,88,4,88,4,88,4,88,4,88,4]},{\"id\":3,\"list\":[3,99,3,99,3,99,3,99,3,99,3,99]}]";
-      // std::string ajson = convertToJson(buckets);  
+
       // Exibe o JSON do buckets resultante
       Serial.println(bucketsJson);
-      client.publish("ESP8266_CLIENT_C8:C9:A3:69:DA:80_RESPONSE", bucketsJson.c_str());
+      client.publish(topicSleaveResponse.c_str(), bucketsJson.c_str());
 
       Serial.printf("[ INFO ] - Publicando no topico [ %s ]\n\r", MQTT_HAS_SLAVE_AVAILABLE_TOPIC);
       client.publish(MQTT_HAS_SLAVE_AVAILABLE_TOPIC, mqttCurrentClientId.c_str());

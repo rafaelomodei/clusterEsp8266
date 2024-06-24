@@ -9,8 +9,6 @@
 #include <sstream>
 #include <string>
 
-String      convertBucketsToJson(const std::vector<std::vector<int>> &buckets);
-String      convertBucketsToString(const std::vector<std::vector<int>> &buckets);
-std::string convertToJson(const std::vector<std::vector<int>> &data);
+String convertBucketsToJson(const std::vector<std::vector<int>> &buckets);
 
 #endif // HELPERS_H

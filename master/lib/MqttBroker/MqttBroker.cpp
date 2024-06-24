@@ -25,7 +25,7 @@ void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
   }
 
   if (strcmp(topic, MQTT_HAS_SLAVE_AVAILABLE_TOPIC) == 0) {
-    // Serial.printf("[ INFO ] - ESP adicionando na lista:  %s \n\r", slave.c_str());
+    Serial.printf("[ INFO ] - ESP adicionando na lista:  %s \n\r", slave.c_str());
 
     manageSlaves->add(slave.c_str());
 
@@ -35,22 +35,22 @@ void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
     manageSlaves->addSlavesToQueue(slave.c_str());
   }
 
-  // Serial.printf("[ ### ] - Topico:  ");
-  // Serial.println(topic);
+  Serial.printf("[ ### ] - Topico:  ");
+  Serial.println(topic);
 
   for (const std::string &sleave : manageSlaves->getAllSleave()) {
 
     std::size_t sizeQueueSlaves = manageSlaves->getAllSleave().size();
 
     if (strcmp(topic, sleave.c_str()) == 0) {
-      // Serial.printf("[ INFO ] - Sleave: %s \n\r", sleave.c_str());
-      // Serial.print("[ INFO:RECEBIDO ] - Message: ");
-      // Serial.println();
+      Serial.printf("[ INFO ] - Sleave: %s \n\r", sleave.c_str());
+      Serial.print("[ INFO:RECEBIDO ] - Message: ");
 
       String data = "";
       for (unsigned int i = 0; i < length; i++) {
         data += (char)payload[i];
       }
+      Serial.println(data);
 
       if (!data.isEmpty())
         db->postBucketList(data);
@@ -61,12 +61,12 @@ void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
 boolean MqttBroker::reconnect() {
 
   if (!client.connect(mqttClientId)) {
-    // Serial.printf("[ ERRO ] - Falha ao se conectar [ %s ]\n\r", mqttClientId);
+    Serial.printf("[ ERRO ] - Falha ao se conectar [ %s ]\n\r", mqttClientId);
     return client.connected();
   }
 
   client.subscribe(MQTT_HAS_SLAVE_AVAILABLE_TOPIC);
-  // Serial.printf("[ INFO ] - Conectado com sucesso [ %s ]\n\r", mqttClientId);
+  Serial.printf("[ INFO ] - Conectado com sucesso [ %s ]\n\r", mqttClientId);
 
   return client.connected();
 }

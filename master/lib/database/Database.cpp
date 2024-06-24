@@ -28,7 +28,7 @@ String Database::getUnorderedList() {
 
   int httpCode = http.GET();
 
-  // Serial.println(httpCode);
+  Serial.println(httpCode);
 
   if (httpCode == 200) {
     String payload = http.getString();
@@ -63,7 +63,7 @@ JsonDocument Database::getTotalPage() {
   http.begin(url);
   int httpCode = http.GET();
 
-  // Serial.println(httpCode);
+  Serial.println(httpCode);
 
   if (httpCode == 200) {
     String payload = http.getString();
@@ -92,7 +92,7 @@ void Database::postBucketList(String data) {
 
   int httpCode = http.POST(data);
 
-  // Serial.println(httpCode);
+  Serial.println(httpCode);
 
   if (httpCode == 200) {
     Serial.println("[ INFO ] - Dados enviados com sucesso.");
