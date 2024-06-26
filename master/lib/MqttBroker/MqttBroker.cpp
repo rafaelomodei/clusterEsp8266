@@ -52,8 +52,11 @@ void MqttBroker::callback(char *topic, byte *payload, unsigned int length) {
       }
       Serial.println(data);
 
-      if (!data.isEmpty())
-        db->postBucketList(data);
+      if (!data.isEmpty()) {
+        std::string a = topic;
+        a.erase(32, 41);
+        db->postBucketList(data, a.c_str());
+      }
     }
   }
 }

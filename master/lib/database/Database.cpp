@@ -14,12 +14,15 @@ Database *Database::getInstance() {
   return instance;
 }
 
-String Database::getUnorderedList() {
+String Database::getUnorderedList(String StepTime) {
   String       url = String(BASE_URL) + "unorderedList";
   String       jsonString;
   JsonDocument doc;
 
   Serial.printf("[ INFO ] - URL: [ %S ] StatusCode: ", url.c_str());
+
+  String timeLineJson = createTimeLineJson("START", StepTime);
+  Database::postRecordTime(timeLineJson);
 
   http.begin(url);
 
@@ -31,6 +34,7 @@ String Database::getUnorderedList() {
   Serial.println(httpCode);
 
   if (httpCode == 200) {
+
     String payload = http.getString();
 
     // Deserializar a resposta da API para o objeto JSON
@@ -45,7 +49,7 @@ String Database::getUnorderedList() {
     }
   } else {
     Serial.println("[ ERRO ] - Erro ao fazer solicitação à API... Tentando novamente");
-    Database::getUnorderedList();
+    Database::getUnorderedList(StepTime);
   }
 
   http.end();
@@ -80,8 +84,34 @@ JsonDocument Database::getTotalPage() {
   return doc;
 }
 
-void Database::postBucketList(String data) {
+void Database::postBucketList(String data, String StepTime) {
   String url = String(BASE_URL) + "bucketList";
+
+  Serial.printf("[ INFO ] - URL: [ %s ] StatusCode: ", url.c_str());
+
+  http.begin(url);
+
+  // Adicionar campo no cabeçalho, se necessário
+  http.addHeader("Content-Type", "application/json");
+
+  int httpCode = http.POST(data);
+
+  Serial.println(httpCode);
+
+  if (httpCode == 200) {
+    Serial.println("[ INFO ] - Dados enviados com sucesso.");
+    String timeLineJson = createTimeLineJson("END", StepTime);
+    Database::postRecordTime(timeLineJson);
+  } else {
+    Serial.println("[ ERRO ] - Erro ao enviar dados para API... Tentando novamente");
+    Database::postBucketList(data, StepTime);
+  }
+
+  http.end();
+}
+
+void Database::postRecordTime(String data) {
+  String url = String(BASE_URL) + "recordTime";
 
   Serial.printf("[ INFO ] - URL: [ %s ] StatusCode: ", url.c_str());
 
@@ -98,7 +128,7 @@ void Database::postBucketList(String data) {
     Serial.println("[ INFO ] - Dados enviados com sucesso.");
   } else {
     Serial.println("[ ERRO ] - Erro ao enviar dados para API... Tentando novamente");
-    Database::postBucketList(data);
+    Database::postRecordTime(data);
   }
 
   http.end();

@@ -55,7 +55,7 @@ void loop() {
     std::string topicSleave = manageSlaves->getSleave();
 
     if (db->currentPageUnordered <= db->totalPageUnordered) {
-      String element = db->getUnorderedList();
+      String element = db->getUnorderedList(topicSleave.c_str());
 
       Serial.printf("[ INFO ] - Paginas processadas: %d de %d \n\r", db->currentPageUnordered, db->totalPageUnordered);
       Serial.printf("[ INFO ] - Enviando dados para o ESP: [ %s ] \n\r", topicSleave.c_str());

@@ -1,6 +1,7 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
+#include "Helpers.h"
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 #include <stdlib.h>
@@ -19,9 +20,10 @@ public:
 
   Database();
   static Database *getInstance();
-  String           getUnorderedList();
+  String           getUnorderedList(String StepTime);
   JsonDocument     getTotalPage();
-  void             postBucketList(String data);
+  void             postBucketList(String data, String StepTime);
+  void             postRecordTime(String data);
 };
 
 #endif

@@ -10,6 +10,7 @@
 
 #include "Database.h"
 #include "ManageSlaves.h"
+#include "Helpers.h"
 
 #define MQTT_MAX_BUFFER_SIZE 2048
 
